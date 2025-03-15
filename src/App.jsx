@@ -1,5 +1,14 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+import over from "./assets/over.wav";
+import win from "./assets/win.wav";
+import click from "./assets/click.wav";
+
+const errorAudio = new Audio(over);
+const winAudio = new Audio(win);
+const clickAudio = new Audio(click);
+errorAudio.load();
+clickAudio.load();
 
 function shuffleArray(arr) {
     let currIdx = arr.length;
@@ -31,19 +40,28 @@ function PokemonCards({ score, setScore, setBestScore }) {
     const [pokemonList, setPokemonList] = useState([]);
     const [vis, setVis] = useState(new Set());
 
+    const handleRestart = () => {
+        setScore(() => 0);
+        setBestScore((prevScore) => {
+            return prevScore > score ? prevScore : score;
+        });
+        setVis(new Set());
+        fetchPokemonList(18).then((pokemonList) => setPokemonList(pokemonList));
+    };
+
     const handleClick = (e) => {
+        clickAudio.play();
+
         const target = e.target.closest(".card").querySelector("div");
 
+        if (vis.length === pokemonList.length) {
+            winAudio.play();
+            handleRestart;
+        }
+
         if (vis.has(target.textContent)) {
-            setScore(() => 0);
-            setBestScore((prevScore) => {
-                return prevScore > score ? prevScore : score;
-            });
-            setVis(new Set());
-            alert("game over");
-            fetchPokemonList(12).then((pokemonList) =>
-                setPokemonList(pokemonList)
-            );
+            errorAudio.play();
+            handleRestart();
             return;
         }
 
@@ -54,7 +72,7 @@ function PokemonCards({ score, setScore, setBestScore }) {
     };
 
     useEffect(() => {
-        fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
+        fetchPokemonList(18).then((pokemonList) => setPokemonList(pokemonList));
     }, []);
 
     return (
@@ -80,19 +98,18 @@ function App() {
 
     return (
         <>
-            <div className="header">
-                <div className="heading">
-                    <h1>Pokemon Memory Game</h1>
-                    <p>
-                        Get points by clicking on an image, but don't click on
-                        any more than once!
-                    </p>
-                </div>
-                <div className="scoreBoard">
-                    <h2>Score: {score}</h2>
-                    <h2>Best Score: {bestScore}</h2>
-                </div>
+            <div className="heading">
+                <h1>Pokemon Memory Game</h1>
+                <p>
+                    Get points by clicking on an image, but don't click on any
+                    more than once!
+                </p>
             </div>
+            <div className="scoreBoard">
+                <h2>Score: {score}</h2>
+                <h2>Best Score: {bestScore}</h2>
+            </div>
+
             <PokemonCards
                 score={score}
                 setScore={setScore}

@@ -27,6 +27,12 @@ h1 {
   line-height: 1.1;
 }
 
+.heading {
+  background-color:#213547;
+}
+.scoreBoard {
+  background-color: coral;
+}
 .card {
   background-color: cornflowerblue;
 }
@@ -35,6 +41,9 @@ h1 {
   :root {
     color: #213547;
     background-color: #ffffff;
+  }
+  .heading {
+    background-color: khaki;
   }
   .card {
     background-color: blanchedalmond;
