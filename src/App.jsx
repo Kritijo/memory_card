@@ -1,8 +1,17 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+function shuffleArray(arr) {
+    let currIdx = arr.length;
+    while (currIdx != 0) {
+        let randomIdx = Math.floor(Math.random() * currIdx);
+        currIdx--;
+        [arr[currIdx], arr[randomIdx]] = [arr[randomIdx], arr[currIdx]];
+    }
+}
+
 async function fetchPokemonList(count) {
-    const maxPokemon = 100;
+    const maxPokemon = 1025;
     const ids = new Set();
 
     while (ids.size < count) {
@@ -32,14 +41,16 @@ function PokemonCards({ score, setScore, setBestScore }) {
             });
             setVis(new Set());
             alert("game over");
-            fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
+            fetchPokemonList(12).then((pokemonList) =>
+                setPokemonList(pokemonList)
+            );
             return;
         }
 
         setScore((score) => score + 1);
 
         setVis(vis.add(target.textContent));
-        fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
+        shuffleArray(pokemonList);
     };
 
     useEffect(() => {
