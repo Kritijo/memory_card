@@ -18,10 +18,27 @@ async function fetchPokemonList(count) {
     return Promise.all(promises);
 }
 
-function PokemonCards() {
+function PokemonCards({ score, setScore, setBestScore }) {
     const [pokemonList, setPokemonList] = useState([]);
+    const [vis, setVis] = useState(new Set());
 
-    const handleClick = () => {
+    const handleClick = (e) => {
+        const target = e.target.closest(".card").querySelector("div");
+
+        if (vis.has(target.textContent)) {
+            setScore(() => 0);
+            setBestScore((prevScore) => {
+                return prevScore > score ? prevScore : score;
+            });
+            setVis(new Set());
+            alert("game over");
+            fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
+            return;
+        }
+
+        setScore((score) => score + 1);
+
+        setVis(vis.add(target.textContent));
         fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
     };
 
@@ -47,6 +64,9 @@ function PokemonCards() {
 }
 
 function App() {
+    const [score, setScore] = useState(0);
+    const [bestScore, setBestScore] = useState(0);
+
     return (
         <>
             <div className="header">
@@ -58,11 +78,15 @@ function App() {
                     </p>
                 </div>
                 <div className="scoreBoard">
-                    <h2>Score: </h2>
-                    <h2>Best Score: </h2>
+                    <h2>Score: {score}</h2>
+                    <h2>Best Score: {bestScore}</h2>
                 </div>
             </div>
-            <PokemonCards></PokemonCards>
+            <PokemonCards
+                score={score}
+                setScore={setScore}
+                setBestScore={setBestScore}
+            ></PokemonCards>
         </>
     );
 }
