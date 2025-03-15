@@ -1,28 +1,45 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
-function PokemonCards() {
-    async function fetchPokemon() {
-        const randomID = Math.floor(Math.random() * 12) + 1;
-        const response = await fetch(
-            `https://pokeapi.co/api/v2/pokemon/${randomID}`
-        );
-        const data = await response.json();
+async function fetchPokemonList(count) {
+    const maxPokemon = 100;
+    const ids = new Set();
 
-        const pokemon = { name: data.name, img: data.sprites.front_default };
-
-        return pokemon;
+    while (ids.size < count) {
+        ids.add(Math.floor(Math.random() * maxPokemon) + 1);
     }
 
-    const [pokemon, setPokemon] = useState({ name: "pikachu", img: null });
+    const promises = Array.from(ids).map(async (id) => {
+        const response = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+        const data = await response.json();
+        return { name: data.name, img: data.sprites.front_default };
+    });
+
+    return Promise.all(promises);
+}
+
+// async function fetchPokemon() {
+//     const randomID = Math.floor(Math.random() * 12) + 1;
+//     const response = await fetch(
+//         `https://pokeapi.co/api/v2/pokemon/${randomID}`
+//     );
+//     const data = await response.json();
+
+//     const pokemon = { name: data.name, img: data.sprites.front_default };
+
+//     return pokemon;
+// }
+
+function PokemonCards() {
+    const [pokemonList, setPokemonList] = useState([]);
+
     useEffect(() => {
-        fetchPokemon().then((result) => setPokemon(result));
+        fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
     }, []);
 
-    const pokemonArr = new Array(12).fill(pokemon);
     return (
         <div className="pokemonCards">
-            {pokemonArr.map((pokemon, idx) => (
+            {pokemonList.map((pokemon, idx) => (
                 <div key={idx} className="card">
                     <img src={pokemon.img} />
                     <div>{pokemon.name}</div>
