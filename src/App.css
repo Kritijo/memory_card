@@ -1,0 +1,39 @@
+img {
+  width: 12em;
+  object-fit: cover;
+}
+
+.header {
+  padding: 20px;
+  text-align: center;
+}
+
+.scoreBoard {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+}
+
+.pokemonCards {
+  padding: 50px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background-color: cornflowerblue;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+}
+.card:hover {
+  box-shadow: 0px 0px 10px;
+}
+
+.card>div{
+    font-size: larger;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
