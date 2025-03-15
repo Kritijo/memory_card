@@ -18,20 +18,12 @@ async function fetchPokemonList(count) {
     return Promise.all(promises);
 }
 
-// async function fetchPokemon() {
-//     const randomID = Math.floor(Math.random() * 12) + 1;
-//     const response = await fetch(
-//         `https://pokeapi.co/api/v2/pokemon/${randomID}`
-//     );
-//     const data = await response.json();
-
-//     const pokemon = { name: data.name, img: data.sprites.front_default };
-
-//     return pokemon;
-// }
-
 function PokemonCards() {
     const [pokemonList, setPokemonList] = useState([]);
+
+    const handleClick = () => {
+        fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
+    };
 
     useEffect(() => {
         fetchPokemonList(12).then((pokemonList) => setPokemonList(pokemonList));
@@ -40,7 +32,12 @@ function PokemonCards() {
     return (
         <div className="pokemonCards">
             {pokemonList.map((pokemon, idx) => (
-                <div key={idx} className="card">
+                <div
+                    key={idx}
+                    className="card"
+                    id={`card-${idx}`}
+                    onClick={handleClick}
+                >
                     <img src={pokemon.img} />
                     <div>{pokemon.name}</div>
                 </div>

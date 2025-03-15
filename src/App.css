@@ -4,7 +4,7 @@ img {
 }
 
 .header {
-  padding: 20px;
+  padding: 30px;
   text-align: center;
 }
 
@@ -23,7 +23,6 @@ img {
 }
 
 .card {
-  background-color: cornflowerblue;
   display: grid;
   place-items: center;
   border-radius: 10px;
@@ -34,6 +33,6 @@ img {
 
 .card>div{
     font-size: larger;
-    font-weight: 600;
+    font-weight: 700;
     margin-bottom: 10px;
 }
