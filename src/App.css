@@ -42,6 +42,12 @@ img {
   margin-bottom: 10px;
 }
 
+.game-over {
+  text-align: center;
+  padding: 10rem;
+  font-size: 1.5rem;
+}
+
 @media(max-width:450px){
   h2{
     font-size: 1.2rem;
@@ -60,4 +66,8 @@ img {
   background: rgba(255, 0, 0, 0.3);
   pointer-events: none;
   animation: shake 0.3s ease-in-out;
+}
+
+.temp{
+  background-color: #333;
 }

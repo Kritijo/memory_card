@@ -1,29 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { errorAudio, winAudio, playClickSound } from "./audio.js";
-import confetti from "canvas-confetti";
-
-const triggerShake = () => {
-    const board = document.querySelector(".pokemonCards");
-    board.classList.add("shake");
-    setTimeout(() => board.classList.remove("shake"), 300);
-};
-
-const triggerConfetti = () => {
-    confetti({
-        particleCount: 300,
-        angle: 60,
-        spread: 200,
-        origin: { x: 0, y: 0.5 },
-    });
-
-    confetti({
-        particleCount: 300,
-        angle: 120,
-        spread: 200,
-        origin: { x: 1, y: 0.5 },
-    });
-};
+import {
+    errorAudio,
+    winAudio,
+    playClickSound,
+    finalWinAudio,
+    triggerConfetti,
+    triggerShake
+} from "./utils.js";
 
 function shuffleArray(arr) {
     let currIdx = arr.length;
@@ -51,7 +35,7 @@ async function fetchPokemonList(count) {
     return Promise.all(promises);
 }
 
-function PokemonCards({ setScore, setBestScore, setRound }) {
+function PokemonCards({ setScore, setBestScore, round, setRound }) {
     const [pokemonList, setPokemonList] = useState([]);
     const [vis, setVis] = useState(new Set());
 
@@ -84,11 +68,19 @@ function PokemonCards({ setScore, setBestScore, setRound }) {
         setScore(vis.size);
 
         if (vis.size === pokemonList.length) {
-            setRound((prevRound) => prevRound + 1);
-            triggerConfetti();
-            winAudio.play();
-            handleRestart(vis.size);
-        } else shuffleArray(pokemonList);
+            if (round === 3) {
+                triggerConfetti();
+                finalWinAudio.play();
+                setVis(new Set());
+                setBestScore(() => vis.size);
+                setRound((prevRound) => prevRound + 1);
+            } else {
+                triggerConfetti();
+                winAudio.play();
+                handleRestart(vis.size);
+                setRound((prevRound) => prevRound + 1);
+            }
+        } else shuffleArray(pokemonList, vis);
     };
 
     useEffect(() => {
@@ -115,7 +107,7 @@ function PokemonCards({ setScore, setBestScore, setRound }) {
 function App() {
     const [score, setScore] = useState(0);
     const [bestScore, setBestScore] = useState(0);
-    const [round, setRound] = useState(0);
+    const [round, setRound] = useState(1);
 
     return (
         <>
@@ -129,15 +121,31 @@ function App() {
             <div className="scoreBoard">
                 <h2>Score: {score}</h2>
                 <h2>Best Score: {bestScore}</h2>
-                <h2>Round: {round}</h2>
+                <h2>Round: {Math.min(round, 3)}/3</h2>
             </div>
 
-            <PokemonCards
-                score={score}
-                setScore={setScore}
-                setBestScore={setBestScore}
-                setRound={setRound}
-            ></PokemonCards>
+            {round < 4 ? (
+                <PokemonCards
+                    score={score}
+                    setScore={setScore}
+                    setBestScore={setBestScore}
+                    round={round}
+                    setRound={setRound}
+                />
+            ) : (
+                <div className="game-over">
+                    <h2>🎉Omg Congrats! You won all rounds! 🎉✨</h2>
+                    <button
+                        onClick={() => {
+                            setRound(1);
+                            setScore(() => 0);
+                            setBestScore(() => 0);
+                        }}
+                    >
+                        Play Again
+                    </button>
+                </div>
+            )}
         </>
     );
 }
