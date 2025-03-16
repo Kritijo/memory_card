@@ -28,13 +28,16 @@ h1 {
 }
 
 .heading {
-  background-color:#213547;
+  background-color: #213547;
 }
 .scoreBoard {
   background-color: coral;
 }
 .card {
   background-color: cornflowerblue;
+}
+.card:active {
+  background-color: coral;
 }
 
 @media (prefers-color-scheme: light) {

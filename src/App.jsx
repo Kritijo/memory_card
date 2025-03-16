@@ -3,6 +3,23 @@ import "./App.css";
 import over from "./assets/over.wav";
 import win from "./assets/win.wav";
 import click from "./assets/click.wav";
+import confetti from "canvas-confetti";
+
+const triggerConfetti = () => {
+    confetti({
+        particleCount: 300,
+        angle: 60,
+        spread: 200,
+        origin: { x: 0, y: 0.5 },
+    });
+
+    confetti({
+        particleCount: 300,
+        angle: 120,
+        spread: 200,
+        origin: { x: 1, y: 0.5 },
+    });
+};
 
 const errorAudio = new Audio(over);
 const winAudio = new Audio(win);
@@ -68,6 +85,7 @@ function PokemonCards({ setScore, setBestScore }) {
         setScore(vis.size);
 
         if (vis.size === pokemonList.length) {
+            triggerConfetti();
             winAudio.play();
             handleRestart(vis.size);
         } else shuffleArray(pokemonList);
