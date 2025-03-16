@@ -1,9 +1,13 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import over from "./assets/over.wav";
-import win from "./assets/win.wav";
-import click from "./assets/click.wav";
+import { errorAudio, winAudio, playClickSound } from "./audio.js";
 import confetti from "canvas-confetti";
+
+const triggerShake = () => {
+    const board = document.querySelector(".pokemonCards");
+    board.classList.add("shake");
+    setTimeout(() => board.classList.remove("shake"), 300);
+};
 
 const triggerConfetti = () => {
     confetti({
@@ -20,12 +24,6 @@ const triggerConfetti = () => {
         origin: { x: 1, y: 0.5 },
     });
 };
-
-const errorAudio = new Audio(over);
-const winAudio = new Audio(win);
-const clickAudio = new Audio(click);
-errorAudio.load();
-clickAudio.load();
 
 function shuffleArray(arr) {
     let currIdx = arr.length;
@@ -71,14 +69,14 @@ function PokemonCards({ setScore, setBestScore, setRound }) {
     };
 
     const handleClick = (e) => {
-        clickAudio.play();
+        playClickSound();
 
         const target = e.target.closest(".card").querySelector("div");
 
         if (vis.has(target.textContent)) {
             errorAudio.play();
+            triggerShake();
             handleRestart(vis.size);
-            setRound(0);
             return;
         }
 
