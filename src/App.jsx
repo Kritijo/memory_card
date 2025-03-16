@@ -36,17 +36,21 @@ async function fetchPokemonList(count) {
     return Promise.all(promises);
 }
 
-function PokemonCards({ score, setScore, setBestScore }) {
+function PokemonCards({ setScore, setBestScore }) {
     const [pokemonList, setPokemonList] = useState([]);
     const [vis, setVis] = useState(new Set());
 
-    const handleRestart = () => {
-        setScore(() => 0);
-        setBestScore((prevScore) => {
-            return prevScore > score ? prevScore : score;
-        });
+    const handleRestart = (finalScore) => {
+        setBestScore((prevScore) => Math.max(finalScore, prevScore));
         setVis(new Set());
-        fetchPokemonList(18).then((pokemonList) => setPokemonList(pokemonList));
+        fetchPokemonList(
+            `${
+                finalScore === pokemonList.length
+                    ? pokemonList.length + 6
+                    : pokemonList.length
+            }`
+        ).then((pokemonList) => setPokemonList(pokemonList));
+        setScore(() => 0);
     };
 
     const handleClick = (e) => {
@@ -54,21 +58,19 @@ function PokemonCards({ score, setScore, setBestScore }) {
 
         const target = e.target.closest(".card").querySelector("div");
 
-        if (vis.length === pokemonList.length) {
-            winAudio.play();
-            handleRestart;
-        }
-
         if (vis.has(target.textContent)) {
             errorAudio.play();
-            handleRestart();
+            handleRestart(vis.size);
             return;
         }
 
-        setScore((score) => score + 1);
-
         setVis(vis.add(target.textContent));
-        shuffleArray(pokemonList);
+        setScore(vis.size);
+
+        if (vis.size === pokemonList.length) {
+            winAudio.play();
+            handleRestart(vis.size);
+        } else shuffleArray(pokemonList);
     };
 
     useEffect(() => {
