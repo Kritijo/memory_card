@@ -53,7 +53,7 @@ async function fetchPokemonList(count) {
     return Promise.all(promises);
 }
 
-function PokemonCards({ setScore, setBestScore }) {
+function PokemonCards({ setScore, setBestScore, setRound }) {
     const [pokemonList, setPokemonList] = useState([]);
     const [vis, setVis] = useState(new Set());
 
@@ -78,6 +78,7 @@ function PokemonCards({ setScore, setBestScore }) {
         if (vis.has(target.textContent)) {
             errorAudio.play();
             handleRestart(vis.size);
+            setRound(0);
             return;
         }
 
@@ -85,6 +86,7 @@ function PokemonCards({ setScore, setBestScore }) {
         setScore(vis.size);
 
         if (vis.size === pokemonList.length) {
+            setRound((prevRound) => prevRound + 1);
             triggerConfetti();
             winAudio.play();
             handleRestart(vis.size);
@@ -115,6 +117,7 @@ function PokemonCards({ setScore, setBestScore }) {
 function App() {
     const [score, setScore] = useState(0);
     const [bestScore, setBestScore] = useState(0);
+    const [round, setRound] = useState(0);
 
     return (
         <>
@@ -128,12 +131,14 @@ function App() {
             <div className="scoreBoard">
                 <h2>Score: {score}</h2>
                 <h2>Best Score: {bestScore}</h2>
+                <h2>Round: {round}</h2>
             </div>
 
             <PokemonCards
                 score={score}
                 setScore={setScore}
                 setBestScore={setBestScore}
+                setRound={setRound}
             ></PokemonCards>
         </>
     );
