@@ -6,7 +6,7 @@ import {
     playClickSound,
     finalWinAudio,
     triggerConfetti,
-    triggerShake
+    triggerShake,
 } from "./utils.js";
 
 function shuffleArray(arr) {
@@ -83,9 +83,23 @@ function PokemonCards({ setScore, setBestScore, round, setRound }) {
         } else shuffleArray(pokemonList, vis);
     };
 
-    useEffect(() => {
-        fetchPokemonList(18).then((pokemonList) => setPokemonList(pokemonList));
-    }, []);
+    const useFetch = () => {
+        const [loading, setLoading] = useState(true);
+        const [error, setError] = useState(null);
+
+        useEffect(() => {
+            fetchPokemonList(18)
+                .then((pokemonList) => setPokemonList(pokemonList))
+                .catch((error) => setError(error))
+                .finally(() => setLoading(false));
+        }, []);
+        return { error, loading };
+    };
+
+    const { error, loading } = useFetch();
+
+    if (loading) return <p className="loading">Loading...</p>;
+    if (error) return <p>A network error was encountered</p>;
 
     return (
         <div className="pokemonCards">

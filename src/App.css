@@ -48,18 +48,38 @@ img {
   font-size: 1.5rem;
 }
 
-@media(max-width:450px){
-  h2{
+.loading {
+  justify-self: center;
+  position: absolute;
+  font-weight: 500;
+  font-size: large;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@media (max-width: 450px) {
+  h2 {
     font-size: 1.2rem;
   }
 }
 
 @keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-10px); }
-  50% { transform: translateX(10px); }
-  75% { transform: translateX(-10px); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-10px);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  75% {
+    transform: translateX(-10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
 .shake {
@@ -68,6 +88,6 @@ img {
   animation: shake 0.3s ease-in-out;
 }
 
-.temp{
+.temp {
   background-color: #333;
 }
